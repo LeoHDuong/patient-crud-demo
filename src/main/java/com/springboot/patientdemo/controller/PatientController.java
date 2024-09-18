@@ -1,5 +1,7 @@
 package com.springboot.patientdemo.controller;
 
+import com.springboot.patientdemo.dto.request.PatientRequest;
+import com.springboot.patientdemo.dto.response.PatientResponse;
 import com.springboot.patientdemo.entity.Patient;
 import com.springboot.patientdemo.service.PatientServiceImpl;
 import jakarta.validation.Valid;
@@ -29,40 +31,23 @@ public class PatientController {
     }
 
     @GetMapping("/patients")
-    public ResponseEntity<List<Patient>> patients() {
-        List<Patient> patients = patientService.findAll();
-        if (patients.isEmpty()) {
-            throw new RuntimeException("No patients found");
-        }
+    public ResponseEntity<List<PatientResponse>> patients() {
         return new ResponseEntity<>(patientService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/patients/{id}")
-    public ResponseEntity<Patient> patient(@PathVariable int id) {
+    public ResponseEntity<PatientResponse> patient(@PathVariable int id) {
         return new ResponseEntity<>(patientService.findById(id), HttpStatus.OK);
     }
 
     @PostMapping("/patients")
-    public ResponseEntity<Patient> addPatient(@Valid @RequestBody Patient patient) {
-        return new ResponseEntity<>(patientService.save(patient), HttpStatus.CREATED);
+    public ResponseEntity<PatientResponse> addPatient(@Valid @RequestBody PatientRequest patientRequest) {
+        return new ResponseEntity<>(patientService.createPatient(patientRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/patients/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable int id, @Valid @RequestBody Patient updatedPatient) {
-        Patient existingPatient = patientService.findById(id);
-
-        if (existingPatient == null) {
-            throw new RuntimeException("No patient found with id " + id);
-        }
-
-        existingPatient.setFirstName(updatedPatient.getFirstName());
-        existingPatient.setLastName(updatedPatient.getLastName());
-        existingPatient.setGender(updatedPatient.getGender());
-        existingPatient.setAge(updatedPatient.getAge());
-        existingPatient.setEmail(updatedPatient.getEmail());
-        existingPatient.setPhoneNumber(updatedPatient.getPhoneNumber());
-
-        return new ResponseEntity<>(patientService.save(existingPatient), HttpStatus.OK);
+    public ResponseEntity<PatientResponse> updatePatient(@PathVariable int id, @Valid @RequestBody PatientRequest patientRequest) {
+        return new ResponseEntity<>(patientService.updatePatientById(id,patientRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/patients/{id}")
