@@ -2,7 +2,6 @@ package com.springboot.patientdemo.controller;
 
 import com.springboot.patientdemo.dto.request.PatientRequest;
 import com.springboot.patientdemo.dto.response.PatientResponse;
-import com.springboot.patientdemo.entity.Patient;
 import com.springboot.patientdemo.service.PatientServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -10,15 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class PatientController {
 
-    private PatientServiceImpl patientService;
+    private final PatientServiceImpl patientService;
 
     public PatientController(PatientServiceImpl patientService) {
         this.patientService = patientService;
