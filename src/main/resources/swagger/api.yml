@@ -1,0 +1,260 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Patient Data API
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080/
+paths:
+  /patients:
+    get:
+      summary: List all patients
+      operationId: listPatients
+      tags:
+        - patients
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paged array of patients
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Register a new patient
+      operationId: createPatient
+      tags:
+        - patients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatientRequest"
+      responses:
+        '201':
+          description: Patient successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientResponse"
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserNotFoundError"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /patients/{patientId}:
+    get:
+      summary: Get information for a specific patient
+      operationId: showPatientById
+      tags:
+        - patients
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          description: The ID of the patient to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Expected response for a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientResponse"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserNotFoundError"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update information for a specific patient
+      operationId: updatePatient
+      tags:
+        - patients
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          description: The ID of the patient to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PatientRequest"
+      responses:
+        '200':
+          description: Patient successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientResponse"
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserNotFoundError"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a patient record
+      operationId: deletePatient
+      tags:
+        - patients
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          description: The ID of the patient to delete
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Patient successfully deleted
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserNotFoundError"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    PatientRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - gender
+        - age
+        - email
+        - phoneNumber
+      properties:
+        firstName:
+          type: string
+          description: First name of the patient
+          example: John
+        lastName:
+          type: string
+          description: Last name of the patient
+          example: Doe
+        gender:
+          type: string
+          enum:
+            - male
+            - female
+            - other
+          description: Gender of the patient
+          example: male
+        age:
+          type: integer
+          minimum: 0
+          maximum: 120
+          description: Age of the patient
+          example: 30
+        email:
+          type: string
+          format: email
+          description: Patient’s email address
+          example: john.doe@example.com
+        phoneNumber:
+          type: string
+          pattern: "^\\+?[0-9. ()-]{7,}$"
+          description: Contact phone number of the patient
+          example: "+1234567890"
+    Patient:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PatientRequest'
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the patient
+          example: 123
+    PatientResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Patient'
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+        message:
+          type: string
+          description: Detailed error message
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+            description: Validation error messages keyed by field name
+    UserNotFoundError:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message for user not found
