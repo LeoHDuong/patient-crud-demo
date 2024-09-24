@@ -1,9 +1,9 @@
 package com.springboot.patientdemo.service;
 
-import com.springboot.patientdemo.dao.PatientRepository;
-import com.springboot.patientdemo.dto.request.PatientRequest;
-import com.springboot.patientdemo.dto.response.PatientResponse;
+import com.openapi.gen.springboot.dto.PatientRequest;
+import com.openapi.gen.springboot.dto.PatientResponse;
 import com.springboot.patientdemo.entity.Patient;
+import com.springboot.patientdemo.dao.PatientRepository;
 import com.springboot.patientdemo.exception.UserNotFound;
 import com.springboot.patientdemo.mapper.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,16 @@ public class PatientServiceImpl implements PatientService {
     private PatientMapper patientMapper2;
 
     @Override
-    public List<PatientResponse> findAll() {
+    public List<PatientResponse> findAll(int limit) {
         List<Patient> patients = patientRepository.findAll();
-        return patients.stream()
+        List<Patient> limitedPatients = patients.stream()
+                .toList();
+
+        return limitedPatients.stream()
                 .map(patientMapper2::toPatientResponse)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public PatientResponse findById(int id) {

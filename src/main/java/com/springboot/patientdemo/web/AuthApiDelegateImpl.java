@@ -1,20 +1,22 @@
-package com.springboot.patientdemo.controller;
+package com.springboot.patientdemo.web;
 
+import com.openapi.gen.springboot.api.AuthApiDelegate;
+import com.openapi.gen.springboot.dto.LoginResponse;
+import com.openapi.gen.springboot.dto.LoginRequest;
 import com.springboot.patientdemo.security.JwtTokenUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@RestController
-public class LoginController {
+@RequiredArgsConstructor
+@Component
+public class AuthApiDelegateImpl implements AuthApiDelegate {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -22,25 +24,23 @@ public class LoginController {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @PostMapping("/login")
-    public Map<String, String> login(@RequestBody Map<String, String> request) throws Exception {
-        String username = request.get("username");
-        String password = request.get("password");
+    @SneakyThrows
+    @Override
+    public ResponseEntity<LoginResponse> login(LoginRequest request) {
+        String username = request.getUsername();
+        String password = request.getPassword();
 
-        // Authenticate the user
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        // Load user details
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        // Generate JWT token
         String token = JwtTokenUtil.generateToken(userDetails.getUsername());
 
-        // Create response
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        return response;
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(token);
+
+        return ResponseEntity.ok(loginResponse);
     }
+
 }
