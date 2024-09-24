@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 public class Patient {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "patient_id")
-    int id;
+    String id;
 
     @Column(name="first_name")
     String firstName;

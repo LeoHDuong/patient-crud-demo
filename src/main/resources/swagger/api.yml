@@ -36,6 +36,14 @@ paths:
       tags:
         - patients
       parameters:
+        - name: page
+          in: query
+          description: The page number to retrieve (default 0)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            format: int32
         - name: limit
           in: query
           description: How many items to return at one time (default 10, max 100)
@@ -107,7 +115,7 @@ paths:
           required: true
           description: The ID of the patient to retrieve
           schema:
-            type: integer
+            type: string
       responses:
         '200':
           description: Expected response for a valid request
@@ -138,7 +146,7 @@ paths:
           required: true
           description: The ID of the patient to update
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -181,7 +189,7 @@ paths:
           required: true
           description: The ID of the patient to delete
           schema:
-            type: integer
+            type: string
       responses:
         '204':
           description: Patient successfully deleted
@@ -256,6 +264,9 @@ components:
     PatientResponse:
       type: object
       properties:
+        id:
+          type: string
+          description: Patient id
         firstName:
           type: string
           description: First name of the patient

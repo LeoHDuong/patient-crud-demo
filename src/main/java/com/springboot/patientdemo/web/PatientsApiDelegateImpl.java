@@ -23,27 +23,24 @@ public class PatientsApiDelegateImpl implements PatientsApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Void> deletePatient(Integer patientId) {
+    public ResponseEntity<Void> deletePatient(String patientId) {
         patientService.deleteById(patientId);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<List<PatientResponse>> listPatients(Integer limit) {
-        if (limit == null) {
-            limit = 10;
-        }
-        List<PatientResponse> patients = patientService.findAll(limit);
+    public ResponseEntity<List<PatientResponse>> listPatients(Integer page, Integer limit) {
+        List<PatientResponse> patients = patientService.findAll(page, limit);
         return ResponseEntity.ok(patients);
     }
 
     @Override
-    public ResponseEntity<PatientResponse> showPatientById(Integer patientId) {
+    public ResponseEntity<PatientResponse> showPatientById(String patientId) {
         return ResponseEntity.ok(patientService.findById(patientId));
     }
 
     @Override
-    public ResponseEntity<PatientResponse> updatePatient(Integer patientId, PatientRequest patientRequest) {
+    public ResponseEntity<PatientResponse> updatePatient(String patientId, PatientRequest patientRequest) {
         return ResponseEntity.ok(patientService.updatePatientById(patientId, patientRequest));
     }
 }

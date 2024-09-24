@@ -7,6 +7,7 @@ import com.springboot.patientdemo.dao.PatientRepository;
 import com.springboot.patientdemo.exception.UserNotFound;
 import com.springboot.patientdemo.mapper.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,27 +20,22 @@ public class PatientServiceImpl implements PatientService {
     private PatientRepository patientRepository;
 
     @Autowired
-    private PatientMapper patientMapper2;
+    private PatientMapper patientMapper;
 
     @Override
-    public List<PatientResponse> findAll(int limit) {
-        List<Patient> patients = patientRepository.findAll();
-        List<Patient> limitedPatients = patients.stream()
-                .toList();
-
-        return limitedPatients.stream()
-                .map(patientMapper2::toPatientResponse)
+    public List<PatientResponse> findAll(int page, int limit) {
+        List<Patient> patients = patientRepository.findAll(PageRequest.of(page, limit)).getContent();
+        return patients.stream()
+                .map(patientMapper::toPatientResponse)
                 .collect(Collectors.toList());
     }
 
 
     @Override
-    public PatientResponse findById(int id) {
+    public PatientResponse findById(String id) {
         Optional<Patient> result = patientRepository.findById(id);
         if (result.isPresent()) {
-            System.out.println(result.get().toString());
-            System.out.println(patientMapper2.toPatientResponse(result.get()).toString());
-            return patientMapper2.toPatientResponse(result.get());
+            return patientMapper.toPatientResponse(result.get());
         }
         else {
             throw new UserNotFound("Patient not found with id: " + id);
@@ -48,16 +44,16 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResponse createPatient(PatientRequest patientRequest) {
-        return patientMapper2.toPatientResponse(patientRepository.save(patientMapper2.toPatient(patientRequest)));
+        return patientMapper.toPatientResponse(patientRepository.save(patientMapper.toPatient(patientRequest)));
     }
 
-    public PatientResponse updatePatientById(int id, PatientRequest patientRequest) {
+    public PatientResponse updatePatientById(String id, PatientRequest patientRequest) {
 
         Optional<Patient> patient = patientRepository.findById(id);
 
         if (patient.isPresent()) {
-            patientMapper2.updatePatient(patient.get(), patientRequest);
-            return patientMapper2.toPatientResponse(patientRepository.save(patient.get()));
+            patientMapper.updatePatient(patient.get(), patientRequest);
+            return patientMapper.toPatientResponse(patientRepository.save(patient.get()));
         }
 
         else {
@@ -67,7 +63,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void deleteById(int id) {
+    public void deleteById(String id) {
         if (patientRepository.existsById(id)) {
             patientRepository.deleteById(id);
         }
