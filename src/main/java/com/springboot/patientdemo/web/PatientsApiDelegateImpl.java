@@ -1,18 +1,20 @@
 package com.springboot.patientdemo.web;
 
-import com.openapi.gen.springboot.api.PatientsApiDelegate;
-import com.openapi.gen.springboot.dto.PatientRequest;
-import com.openapi.gen.springboot.dto.PatientResponse;
+import com.springboot.api.PatientsApiDelegate;
+import com.springboot.dto.PatientRequest;
+import com.springboot.dto.PatientResponse;
 import com.springboot.patientdemo.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Component
+@CrossOrigin(origins = "http://localhost:3000")
 public class PatientsApiDelegateImpl implements PatientsApiDelegate {
 
     private final PatientService patientService;

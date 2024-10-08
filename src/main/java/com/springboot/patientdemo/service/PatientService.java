@@ -1,7 +1,7 @@
 package com.springboot.patientdemo.service;
 
-import com.openapi.gen.springboot.dto.PatientRequest;
-import com.openapi.gen.springboot.dto.PatientResponse;
+import com.springboot.dto.PatientRequest;
+import com.springboot.dto.PatientResponse;
 
 import java.util.List;
 

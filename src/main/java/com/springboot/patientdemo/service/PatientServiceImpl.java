@@ -1,7 +1,7 @@
 package com.springboot.patientdemo.service;
 
-import com.openapi.gen.springboot.dto.PatientRequest;
-import com.openapi.gen.springboot.dto.PatientResponse;
+import com.springboot.dto.PatientRequest;
+import com.springboot.dto.PatientResponse;
 import com.springboot.patientdemo.entity.Patient;
 import com.springboot.patientdemo.dao.PatientRepository;
 import com.springboot.patientdemo.exception.UserNotFound;

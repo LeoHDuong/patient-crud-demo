@@ -13,8 +13,12 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -27,7 +31,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JdbcUserDetailsManager JdbcUserDetailsManager() {
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Allow your frontend origin
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow HTTP methods
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Allow headers like Authorization
+        configuration.setAllowCredentials(true); // Allow credentials (tokens, etc.)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Apply CORS settings to all endpoints
+        return source;
+    }
+
+    @Bean
+    public JdbcUserDetailsManager jdbcUserDetailsManager() {
         return new JdbcUserDetailsManager(dataSource);
     }
 
@@ -44,6 +61,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer ->
                         configurer

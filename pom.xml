@@ -14,18 +14,6 @@
 	<name>patientdemo</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 	<properties>
 		<java.version>22</java.version>
 		<org.mapstruct.version>1.6.2</org.mapstruct.version>
@@ -147,8 +135,8 @@
 								${project.basedir}/src/main/resources/swagger/api.yml
 							</inputSpec>
 							<generatorName>spring</generatorName>
-							<apiPackage>com.openapi.gen.springboot.api</apiPackage>
-							<modelPackage>com.openapi.gen.springboot.dto</modelPackage>
+							<apiPackage>${project.groupId}.api</apiPackage>
+							<modelPackage>${project.groupId}.dto</modelPackage>
 							<supportingFilesToGenerate>
 								ApiUtil.java
 							</supportingFilesToGenerate>

@@ -1,7 +1,7 @@
 package com.springboot.patientdemo.mapper;
 
-import com.openapi.gen.springboot.dto.PatientRequest;
-import com.openapi.gen.springboot.dto.PatientResponse;
+import com.springboot.dto.PatientRequest;
+import com.springboot.dto.PatientResponse;
 import com.springboot.patientdemo.entity.Patient;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

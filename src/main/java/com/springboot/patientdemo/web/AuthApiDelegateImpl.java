@@ -1,8 +1,8 @@
 package com.springboot.patientdemo.web;
 
-import com.openapi.gen.springboot.api.AuthApiDelegate;
-import com.openapi.gen.springboot.dto.LoginResponse;
-import com.openapi.gen.springboot.dto.LoginRequest;
+import com.springboot.api.AuthApiDelegate;
+import com.springboot.dto.LoginResponse;
+import com.springboot.dto.LoginRequest;
 import com.springboot.patientdemo.security.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RequiredArgsConstructor
 @Component
