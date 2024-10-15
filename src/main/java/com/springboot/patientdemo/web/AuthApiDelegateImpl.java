@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RequiredArgsConstructor
 @Component
@@ -24,6 +23,9 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @SneakyThrows
     @Override
@@ -36,7 +38,7 @@ public class AuthApiDelegateImpl implements AuthApiDelegate {
         );
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        String token = JwtTokenUtil.generateToken(userDetails.getUsername());
+        String token = jwtTokenUtil.generateToken(userDetails.getUsername());
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(token);
